@@ -17,7 +17,10 @@ while True:
                 nome = input("Digite o nome do produto: ")
                 descricao = input("Digite a descrição do produto: ")
                 preco = float(input("Digite o preço do produto: "))
-                cadastrarProduto(condb,nome,descricao,preco)
+                quantiEstoque = int(input("Digite a quantidade do produto no estoque: "))
+                nome_cat = input("Digite a categoria do produto: ")
+                descricao_cat = input("Digite a descrição da categoria do produto: ")
+                cadastrarProduto(condb,nome,descricao,preco,quantiEstoque,nome_cat,descricao_cat)
             elif opc == 2:
                 print('\n')
                 mostrarProdutos(condb)

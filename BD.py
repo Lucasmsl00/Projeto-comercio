@@ -1,8 +1,15 @@
-def cadastrarProduto(condb,nome,descricao,preco):
+def cadastrarProduto(condb,nome,descricao,preco, quantEstoque, nome_cate, descricao_cate):
     mycursor = condb.cursor()
     sql = "INSERT INTO produtos(Nome, Descricao, Preco) VALUES (%s,%s,%s);"
     valores = (nome,descricao,preco)
     mycursor.execute(sql,valores)
+    ID_Produto = mycursor.lastrowid
+    sql1 = "INSERT INTO estoque (ID_Produto, Quantidade) VALUES (%s, %s);"
+    val1 = (ID_Produto, quantEstoque)
+    mycursor.execute(sql1, val1)
+    sql2 = "INSERT INTO categoriasprodutos (ID_Categoria, Nome, Descricao) VALUES (%s, %s, %s);"
+    val2 = (ID_Produto, nome_cate, descricao_cate)
+    mycursor.execute(sql2, val2)
     condb.commit()
     print("Produto cadastrado com sucesso!!")
     mycursor.close()
