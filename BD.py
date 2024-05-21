@@ -41,6 +41,15 @@ def cadastrarFuncionarios(condb, nome, cargo, departamento):
     print("Funcionário cadastrado com sucesso!")
     mycursor.close()
 
+def cadastrarPromocoes(condb, nome, descricao, datainicio, datafim):
+    mycursor = condb.cursor()
+    sql = "INSERT INTO promocoes (Nome, Descricao, DataInicio, DataFim) VALUES (%s, %s, %s, %s);"
+    valores = (nome, descricao, datainicio, datafim)
+    mycursor.execute(sql, valores)
+    condb.commit()
+    print("Promoção cadastrada com sucesso!")
+    mycursor.close()
+
 def atualizarProduto(condb,nome,descricao,preco,ID_produto):
     mycursor = condb.cursor()
     sql = "UPDATE produtos SET Nome = %s, Descricao = %s, Preco = %s WHERE ID_Produto = %s;"
@@ -52,7 +61,7 @@ def atualizarProduto(condb,nome,descricao,preco,ID_produto):
     
 def atualizarCliente(condb, nome, sobrenome, endereco, cidade, codigopostal, id_cliente):
     mycursor = condb.cursor()
-    sql = "UPDATE clientes SET Nome = %s, Sobrenome = %s, Endereco = %s, Cidade = %s, Codigopostal = %s WHERE Id_Cliente = %s;"
+    sql = "UPDATE clientes SET Nome = %s, Sobrenome = %s, Endereco = %s, Cidade = %s, Codigopostal = %s WHERE ID_Cliente = %s;"
     valores = (nome,sobrenome,endereco,cidade,codigopostal,id_cliente)
     mycursor.execute(sql, valores)
     condb.commit()
@@ -67,19 +76,46 @@ def atualizarFornecedor(condb, nome, contato, endereco, id_fornecedor):
     condb.commit()
     print("Funcionário atualizado com sucesso!!")
     mycursor.close()
-    
-def deletarProduto(condb,id_produto):
+
+def atualizarFuncionario(condb, nome, cargo, departamento):
     mycursor = condb.cursor()
-    sql = "DELETE FROM produtos WHERE ID_Produto = %s;"
-    valores = (id_produto,)
+    sql = "UPDATE funcionarios SET Nome = %s, Cargo = %s, Departamento = %s WHERE ID_Funcionario = %s;"
+    valores = (nome, cargo, departamento)
+    mycursor.execute(sql, valores)
+    condb.commit()
+    print("Funcionário atualizado com sucesso!")
+    mycursor.close()
+
+def atualizarPromocao(condb, nome, descricao, datainicio, datafim, id_promocao):
+    mycursor = condb.cursor()
+    sql = "UPDATE promocoes SET Nome = %s, Descricao = %s, DataInicio = %s, DataFim = %s WHERE ID_Promocao = %s;"
+    valores = (nome, descricao, datainicio, datafim, id_promocao)
+    mycursor.execute(sql, valores)
+    condb.commit()
+    print("Promoção atualizada com sucesso!")
+    mycursor.close()
+
+def deletarProduto(condb,nome):
+    mycursor = condb.cursor()
+    sql = "DELETE FROM produtos WHERE Nome = %s;"
+    valores = (nome,)
     mycursor.execute(sql,valores)
     condb.commit()
     print("Produto excluído do banco de dados com sucesso!")
     mycursor.close()
 
+def deletarPromocao(condb, nome):
+    mycursor = condb.cursor()
+    sql = ("DELETE FROM promocoes WHERE Nome = %s;")
+    valores = (nome,)
+    mycursor.execute(sql, valores)
+    condb.commit()
+    print("Promoção deletada com sucesso!")
+    mycursor.close()
+
 def mostrartabelas(condb):
     mycursor = condb.cursor()
-    mycursor.execute("SHOW TABLES;")
+    mycursor.execute("SHOW Clientes, Produtos, Funcionarios, Fornecedores, Promocoes TABLES;")
     resultado = mycursor.fetchall()
     print('\n')
     for tabela in resultado:
@@ -87,7 +123,7 @@ def mostrartabelas(condb):
     print('\n')
     mycursor.close()
 
-def menu(condb):
+def mostrarTabelas(condb):
     mycursor = condb.cursor()
     mycursor.execute("SHOW TABLES;")
     resultado = mycursor.fetchall()
@@ -100,4 +136,18 @@ def mostrarProdutos(condb):
     mycursor.execute("SELECT ID_Produto,Nome FROM produtos;")
     produtos = mycursor.fetchall()
     for produto in produtos:
-        print(f"Id: {produto[0]} - Nome: {produto[1]}")    
+        print(f"Id: {produto[0]} - Nome: {produto[1]}") 
+
+def listarProdutos(condb):
+    mycursor = condb.cursor()
+    mycursor.execute("SELECT * FROM produtos;")
+    produtos = mycursor.fetchall()
+    for produto in produtos:
+        print(f"Id: {produto[0]} - Nome: {produto[1]} - Descrição: {produto[2]} - Preço: {produto[3]}")
+
+def listarClientes(condb):
+    mycursor = condb.cursor()
+    mycursor.execute("SELECT * FROM clientes;")
+    clientes = mycursor.fetchall()
+    for cliente in clientes:
+        print(f"Id: {produto[0]} - Nome: {produto[1]} - Descrição: {produto[2]} - Preço: {produto[3]}")
