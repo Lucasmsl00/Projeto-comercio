@@ -9,6 +9,40 @@ while True:
     mostrarTabelas(condb)
     opc = int(input("0. Sair\nEscolha a tabela que deseja fazer alterações: "))
     if opc == 0: break
+    elif opc == 2:
+        while True:
+            opc = int(input('\n0 - Sair\n1 - Cadastrar um novo cliente\n2 - Atualizar cliente\n3 - Deletar cliente\n4. Listar cliente: '))
+            if opc == 0: break
+            
+            elif opc == 1:
+                nome = input("Digite o nome do cliente: ")
+                sobrenome = input("Digite o sobrenome: ")
+                endereco = input("Digite o endereço do cliente: ")
+                cidade = input("Digite a sua cidade: ")
+                codigopostal = input("Digite o código postal: ")
+                cadastrarCliente(condb, nome, sobrenome, endereco, cidade, codigopostal)
+            
+            elif opc == 2:
+                nome = input("Digite o nome do cliente: ")
+                sobrenome = input("Digite o sobrenome: ")
+                endereco = input("Digite o endereço do cliente: ")
+                cidade = input("Digite a sua cidade: ")
+                codigopostal = input("Digite o código postal: ")
+                id_cliente = int(input("Digite o id do cliente que deseja atualizar: "))
+                atualizarCliente(condb, nome, sobrenome, endereco, cidade, codigopostal, id_cliente)
+            
+            elif opc == 3:
+                nome = input("Digite o nome do cliente que deseja deletar: ")
+                opc = input("Deseja realmente deletar esse cliente? Y/N").capitalize()
+                if opc == "Y":
+                    deletarCliente(condb, nome)
+                else:
+                    print("Ação cancelada!!")
+                    break
+                
+            elif opc == 4:
+                print("\n==============LISTANDO CLIENTES==============\n")
+                listarClientes(condb)
 
     elif opc == 11:
         while True:

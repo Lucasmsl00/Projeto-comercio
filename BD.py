@@ -113,6 +113,15 @@ def deletarPromocao(condb, nome):
     print("Promoção deletada com sucesso!")
     mycursor.close()
 
+def deletarCliente(condb, nome):
+    mycursor = condb.cursor()
+    sql = "DELETE FROM clientes WHERE Nome = %s;"
+    val = (nome,)
+    mycursor.execute(sql,val)
+    condb.commit()
+    print("\nCliente deletado com sucesso!\n")
+    mycursor.close()
+
 def mostrartabelas(condb):
     mycursor = condb.cursor()
     mycursor.execute("SHOW Clientes, Produtos, Funcionarios, Fornecedores, Promocoes TABLES;")
