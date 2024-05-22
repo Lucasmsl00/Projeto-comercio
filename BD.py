@@ -150,4 +150,4 @@ def listarClientes(condb):
     mycursor.execute("SELECT * FROM clientes;")
     clientes = mycursor.fetchall()
     for cliente in clientes:
-        print(f"Id: {produto[0]} - Nome: {produto[1]} - Descrição: {produto[2]} - Preço: {produto[3]}")
+        print(f"Id: {cliente[0]} - Nome: {cliente[1]} - Descrição: {cliente[2]} - Preço: {cliente[3]}")
