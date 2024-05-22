@@ -11,7 +11,7 @@ while True:
     if opc == 0: break
     elif opc == 2:
         while True:
-            opc = int(input('\n0 - Sair\n1 - Cadastrar um novo cliente\n2 - Atualizar cliente\n3 - Deletar cliente\n4. Listar cliente: '))
+            opc = int(input('\n0 - Sair\n1 - Cadastrar um novo cliente\n2 - Atualizar cliente\n3 - Deletar cliente\n4 - Listar cliente: '))
             if opc == 0: break
             
             elif opc == 1:
@@ -41,21 +41,58 @@ while True:
                     break
                 
             elif opc == 4:
-                print("\n==============LISTANDO CLIENTES==============\n")
                 listarClientes(condb)
+
+    elif opc == 6:
+        while True:
+            opc = int(input('\n0 - Sair\n1 - Cadastrar um novo fornecedor\n2 - Atualizar fornecedor\n3 - Deletar fornecedor\n4 - Listar fornecedores: '))
+            if opc == 0: break
+            elif opc == 1:
+                nome = input("Digite o nome do fornecedor: ")
+                contato = input("Digite o contato do fornecedor: ")
+                endereco = input("Digite o endereço: ")
+                cadastrarFornecedor(condb, nome, contato, endereco)
+
+            elif opc == 2:
+                nome = input("Digite o nome do fornecedor: ")
+                contato = input("Digite o contato do fornecedor: ")
+                endereco = input("Digite o endereço: ")
+                id_fornecedor = int(input("Digite o id do fornecedor que deseja alterar as informações: "))
+                atualizarFornecedor(condb, nome, contato, endereco, id_fornecedor)
+
+            elif opc == 3:
+                nome = input("Digite o nome do fornecedor que deseja excluir: ")
+                opc = input("Tem certeza que deseja EXCLUIR esse fornecedor: Y/N ")
+                if opc == "Y":
+                    deletarFornecedor(condb, nome)
+                else: 
+                    print("Ação cancelada!!")
+                    break
+
+            elif opc == 4:
+                listarFornecedores(condb)
+
 
     elif opc == 11:
         while True:
-            opc = int(input('\n0 - Sair\n1 - Cadastrar um novo produto\n2 - Atualizar produto\n3 - Deletar produto\n4. Listar produtos: '))
+            opc = int(input('\n0 - Sair\n1 - Cadastrar um novo produto\n2 - Atualizar produto\n3 - Deletar produto\n4 - Listar produtos: '))
             if opc == 0: break
             elif opc == 1:
                 nome = input("Digite o nome do produto: ")
                 descricao = input("Digite a descrição do produto: ")
                 preco = float(input("Digite o preço do produto: "))
                 quantiEstoque = int(input("Digite a quantidade do produto no estoque: "))
-                nome_cat = input("Digite a categoria do produto: ")
-                descricao_cat = input("Digite a descrição da categoria do produto: ")
-                cadastrarProduto(condb,nome,descricao,preco,quantiEstoque,nome_cat,descricao_cat)
+                opc_cat = input("A categoria do produto já existe? Y/N ")
+
+                if opc_cat == 'Y':
+                    listarCatProdutos(condb)
+                    nome_cat = input("Digite o nome da categoria existente: ")
+                    categoriaExistente(condb)
+
+                else:
+                    nome_cat = input("Digite a categoria do produto: ")
+                    descricao_cat = input("Digite a descrição da categoria do produto: ")
+                    categoriaInexistente(condb,nome,descricao,preco,quantiEstoque,nome_cat,descricao_cat)
 
             elif opc == 2:
                 print('\n')
@@ -72,7 +109,7 @@ while True:
                 if opc == 'Y':
                     deletarProduto(condb,nome)
                 else:
-                    print("\nOK!")
+                    print("Ação cancelada!!")
                     break
 
             elif opc == 4:
@@ -80,15 +117,15 @@ while True:
 
     elif opc == 12:
         while True:
-            opc = int(input('\n0 - Sair\n1 - Cadastrar uma nova promoção\n2 - Atualizar promoção\n3 - Deletar promoção: '))
+            opc = int(input('\n0 - Sair\n1 - Cadastrar uma nova promoção\n2 - Atualizar promoção\n3 - Deletar promoção\n4 - Listar promoções: '))
             if opc == 0: break
 
             elif opc == 1:
                 nome = input("Digite o nome da promoção: ")
                 descricao = input("Digite a descrição: ")
-                dataini = input("Digite a data de inicio: ")
+                dataini = input("Digite a data de inicio DD-MM-YYYY: ")
                 dataini = datetime.strptime(dataini, "%d-%m-%Y").strftime("%Y-%m-%d")
-                datafim = input("Digite a data do fim: ")
+                datafim = input("Digite a data do fim DD-MM-YYYY: ")
                 datafim = datetime.strptime(datafim, "%d-%m-%Y").strftime("%Y-%m-%d")
                 cadastrarPromocoes(condb, nome, descricao, dataini, datafim)
 
@@ -108,6 +145,8 @@ while True:
                 if opc == 'Y':
                     deletarPromocao(condb,nome)
                 else:
-                    print("\nOK!")
+                    print("Ação cancelada!!")
                     break
-# ajustes
+
+            elif opc == 4:
+                listarPromocoes(condb)
