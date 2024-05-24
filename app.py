@@ -85,14 +85,23 @@ while True:
                 opc_cat = input("A categoria do produto já existe? Y/N ")
 
                 if opc_cat == 'Y':
-                    listarCatProdutos(condb)
-                    nome_cat = input("Digite o nome da categoria existente: ")
-                    categoriaExistente(condb)
+                    nome_categoria = input("Digite o nome da categoria que o produto pertence: ")
+                    desc_categoria = ''
+                else:
+                    nome_categoria = input("Digite o nome da nova categoria: ")
+                    desc_categoria = input("Digite a descrição da categoria: ")
+                    
+                opc_forn = input("O produto é fornecido por um fornecedor existente? Y/N ")
+                if opc_forn == "Y":
+                    nome_forn = input("Digite o nome do fornecedor: ")
+                    contato_forn = ''
+                    endereco_forn = ''
 
                 else:
-                    nome_cat = input("Digite a categoria do produto: ")
-                    descricao_cat = input("Digite a descrição da categoria do produto: ")
-                    categoriaInexistente(condb,nome,descricao,preco,quantiEstoque,nome_cat,descricao_cat)
+                    nome_forn = input("Digite o nome do fornecedor: ")
+                    contato_forn =  input("Digite o contato do fornecedor: ")
+                    endereco =  input("Digite o endereço do fornecedor: ")
+                cadastrarProduto(condb, nome, descricao, preco, quantiEstoque, nome_categoria, desc_categoria, nome_forn, contato_forn, endereco)
 
             elif opc == 2:
                 print('\n')

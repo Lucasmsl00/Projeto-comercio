@@ -1,31 +1,57 @@
-def cadastrarProduto(condb):
+def cadastrarProduto(condb,nome,descricao,preco,quantEstoque, nome_cate, descricao_cate, nome_forn, contato_forn, endereco_forn):
+    mycursor = condb.cursor()
+    sql = "INSERT INTO produtos(Nome, Descricao, Preco) VALUES (%s,%s,%s);"
+    valores = (nome,descricao,preco)
+    mycursor.execute(sql,valores)
+    ID_Produto = mycursor.lastrowid
+    sql1 = "INSERT INTO estoque (ID_Produto, Quantidade) VALUES (%s, %s);"
+    val1 = (ID_Produto, quantEstoque)
+    mycursor.execute(sql1, val1)
 
-    def categoriaInexistente(condb,nome,descricao,preco, id_categoria,quantEstoque, nome_cate, descricao_cate):
-        mycursor = condb.cursor()
-        sql = "INSERT INTO produtos(Nome, Descricao, Preco) VALUES (%s,%s,%s);"
-        valores = (nome,descricao,preco)
-        mycursor.execute(sql,valores)
-        ID_Produto = mycursor.lastrowid
-        sql1 = "INSERT INTO estoque (ID_Produto, Quantidade) VALUES (%s, %s);"
-        val1 = (ID_Produto, quantEstoque)
-        mycursor.execute(sql1, val1)
+    if opc_cat == 'Y':
+        sql4 = ('SELECT ID_Categoria FROM categoriasprodutos WHERE Nome = %s')
+        val4 = (nome_categoria,)
+        mycursor.execute(sql4,val4)
+        ID_categoria = mycursor.fetchone()[0]
+        int(ID_categoria)
+        sql3 = ("UPDATE produtos SET ID_Categoria = %s WHERE ID_Produto = %s")
+        val3 = (ID_categoria, ID_Produto)
+        mycursor.execute(sql3,val3)
+        
+        
+    else:
         sql2 = "INSERT INTO categoriasprodutos (ID_Categoria, Nome, Descricao) VALUES (%s, %s, %s);"
         val2 = (ID_Produto, nome_cate, descricao_cate)
         mycursor.execute(sql2, val2)
-        sql3 = ("UPDATE FROM produtos SET ID_Categoria WHERE Nome = %s;")
+        ID_categoria = mycursor.lastrowid
+        sql8 = ("UPDATE produtos SET ID_Categoria = %s WHERE ID_Produto = %s;")
+        val8 = (ID_categoria, ID_Produto)
+        mycursor.execute(sql8,val8)
+        print("Categoria cadastrada com sucesso!")
 
+    if opc_forn == 'Y':
+        sql5 = ("SELECT ID_Fornecedor FROM fornecedores WHERE Nome = %s")
+        val5 = (nome_forn,)
+        mycursor.execute(sql5, val5)
+        ID_Fornecedor = mycursor.fetchone()[0]
+        int(ID_Fornecedor)
+        sql6 = ("UPDATE produtos SET ID_Fornecedor = %s WHERE ID_Produto = %s")
+        val6 = (ID_Fornecedor, ID_Produto)
+        mycursor.execute(sql6,val6)
 
-    def categoriaExistente(condb,nome,descricao,preco, quantEstoque, nome_cate, descricao_cate):
-        mycursor = condb.cursor()
-        sql = "INSERT INTO produtos(Nome, Descricao, Preco) VALUES (%s,%s,%s);"
-        valores = (nome,descricao,preco)
-        mycursor.execute(sql,valores)
-        ID_Produto = mycursor.lastrowid
-        sql1 = "INSERT INTO estoque (ID_Produto, Quantidade) VALUES (%s, %s);"
-        val1 = (ID_Produto, quantEstoque)
-        mycursor.execute(sql1, val1)
-        mycursor.execute("SELECT ID_Categoria FROM categoriasprodutos WHERE Nome = %s;")
-        ID_Categoria = int(mycursor.fetchone())
+    else:
+        sql7 = "INSERT INTO Fornecedores (Nome, Contato, Endereco) VALUES (%s, %s, %s);"
+        val7 = (nome_forn, contato_forn, endereco_forn)
+        mycursor.execute(sql7, val7)
+        ID_Fornecedor = mycursor.lastrowid
+        sql9 = "UPDATE produtos SET ID_Fornecedor = %s WHERE ID_Produto = %s;"
+        val9 = (ID_Fornecedor, ID_Produto)
+        mycursor.execute(sql9,val9)
+        print("Fornecedor cadastrado com sucesso!")
+
+    condb.commit()
+    mycursor.close()
+    print("Produto cadastrado com sucesso!")
 
     
     condb.commit()
