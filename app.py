@@ -42,7 +42,9 @@ while True:
                 
             elif opc == 4:
                 listarClientes(condb)
-
+    elif opc == 5:
+        mostrarEstoque(condb)
+        
     elif opc == 6:
         while True:
             opc = int(input('\n0 - Sair\n1 - Cadastrar um novo fornecedor\n2 - Atualizar fornecedor\n3 - Deletar fornecedor\n4 - Listar fornecedores: '))
@@ -62,7 +64,7 @@ while True:
 
             elif opc == 3:
                 nome = input("Digite o nome do fornecedor que deseja excluir: ")
-                opc = input("Tem certeza que deseja EXCLUIR esse fornecedor: Y/N ")
+                opc = input("Tem certeza que deseja EXCLUIR esse fornecedor: Y/N ").capitalize()
                 if opc == "Y":
                     deletarFornecedor(condb, nome)
                 else: 
@@ -82,7 +84,9 @@ while True:
                 descricao = input("Digite a descrição do produto: ")
                 preco = float(input("Digite o preço do produto: "))
                 quantiEstoque = int(input("Digite a quantidade do produto no estoque: "))
-                opc_cat = input("A categoria do produto já existe? Y/N ")
+                
+                listarCatProdutos(condb)
+                opc_cat = input("A categoria do produto já existe? Y/N ").capitalize()
 
                 if opc_cat == 'Y':
                     nome_categoria = input("Digite o nome da categoria que o produto pertence: ")
@@ -90,8 +94,9 @@ while True:
                 else:
                     nome_categoria = input("Digite o nome da nova categoria: ")
                     desc_categoria = input("Digite a descrição da categoria: ")
-                    
-                opc_forn = input("O produto é fornecido por um fornecedor existente? Y/N ")
+                
+                listarFornecedores(condb) 
+                opc_forn = input("O produto é fornecido por um fornecedor existente? Y/N ").capitalize()
                 if opc_forn == "Y":
                     nome_forn = input("Digite o nome do fornecedor: ")
                     contato_forn = ''
@@ -100,8 +105,8 @@ while True:
                 else:
                     nome_forn = input("Digite o nome do fornecedor: ")
                     contato_forn =  input("Digite o contato do fornecedor: ")
-                    endereco =  input("Digite o endereço do fornecedor: ")
-                cadastrarProduto(condb, nome, descricao, preco, quantiEstoque, nome_categoria, desc_categoria, nome_forn, contato_forn, endereco)
+                    endereco_forn =  input("Digite o endereço do fornecedor: ")
+                cadastrarProduto(condb, nome, descricao, preco, quantiEstoque, nome_categoria, desc_categoria, nome_forn, contato_forn, endereco_forn, opc_cat, opc_forn)
 
             elif opc == 2:
                 print('\n')
