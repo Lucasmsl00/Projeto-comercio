@@ -1,3 +1,5 @@
+from mysql.connector import Error
+
 def cadastrarProduto(condb,nome,descricao,preco,quantEstoque, nome_cate, descricao_cate, nome_forn, contato_forn, endereco_forn,opc_cat, opc_forn):
     
     try: 
@@ -143,14 +145,34 @@ def atualizarPromocao(condb, nome, descricao, datainicio, datafim, id_promocao):
     print("Promoção atualizada com sucesso!")
     mycursor.close()
 
-def deletarProduto(condb,nome):
-    mycursor = condb.cursor()
-    sql = "DELETE FROM produtos WHERE Nome = %s;"
-    valores = (nome,)
-    mycursor.execute(sql,valores)
-    condb.commit()
-    print("Produto excluído do banco de dados com sucesso!")
-    mycursor.close()
+def deletarProduto(condb,nome_produto):
+    try:
+        produto_id = obterIdProduto(condb, nome_produto)
+        if not produto_id:
+            return
+        
+        condb.start_transaction()
+        with condb.cursor as cursor:
+            sql_detalhe_pedido = "DELETE FROM detalhespedido WHERE ID_produto = %s"
+            cursor.execute(sql_detalhe_pedido, (produto_id,))
+        with condb.cursor as cursor:
+            sql_estoque = "DELETE FROM estoque WHERE ID_Produto = %s"
+            cursor.execute(sql_estoque, (produto_id,))
+        
+        with condb.cursor as cursor:
+            sql_produto = "DELETE FROM produto WHERE ID_Produto = %s"
+            cursor.execute(sql_produto, (produto_id,))
+            condb.commit()
+            print("Produto deletado com sucesso!")
+
+    except Error as e:
+        condb.rollback()
+        print("Ocorreu um erro ao deletar o produto!")
+        
+    finally:
+        condb.close()
+        
+            
 
 def deletarPromocao(condb, nome):
     mycursor = condb.cursor()
@@ -242,3 +264,25 @@ def mostrarEstoque(condb):
     quant_produtos = mycursor.fetchall()
     for quant_produto in quant_produtos:
         print(f'\vProduto: {quant_produto[0]}\vQuantidade em estoque: {quant_produto[1]}\v')
+
+def obterIdProduto(condb,nome):
+    try:
+        with condb.cursor() as cursor:
+            sql = ("SELECT ID_Produto FROM produtos WHERE Nome = %s")
+            cursor.execute(sql, (nome,))
+            resultado = cursor.fetchone()
+            if resultado:
+                return resultado[0]
+            else:
+                print(f"Produto com nome: {nome}, não encontrado!")
+    
+    except Error as e:
+        print(f"Ocorreu um erro ao obter Id do produto: {e}")
+        return None
+
+    finally:
+        condb.close()
+
+    
+
+
