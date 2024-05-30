@@ -27,7 +27,6 @@ def cadastrarProduto(condb,nome,descricao,preco,quantEstoque, nome_cate, descric
             val2 = (nome_cate, descricao_cate)
             mycursor.execute(sql2, val2)
             ID_categoria = mycursor.lastrowid
-            print(ID_categoria)
             sql8 = ("UPDATE produtos SET ID_Categoria = %s WHERE ID_Produto = %s;")
             val8 = (ID_categoria, ID_Produto)
             mycursor.execute(sql8,val8)
@@ -152,18 +151,19 @@ def deletarProduto(condb,nome_produto):
             return
         
         condb.start_transaction()
-        with condb.cursor as cursor:
+        with condb.cursor() as cursor:
             sql_detalhe_pedido = "DELETE FROM detalhespedido WHERE ID_produto = %s"
             cursor.execute(sql_detalhe_pedido, (produto_id,))
-        with condb.cursor as cursor:
+        with condb.cursor() as cursor:
             sql_estoque = "DELETE FROM estoque WHERE ID_Produto = %s"
             cursor.execute(sql_estoque, (produto_id,))
         
-        with condb.cursor as cursor:
+        with condb.cursor() as cursor:
             sql_produto = "DELETE FROM produto WHERE ID_Produto = %s"
             cursor.execute(sql_produto, (produto_id,))
-            condb.commit()
-            print("Produto deletado com sucesso!")
+
+        condb.commit()
+        print("Produto deletado com sucesso!")
 
     except Error as e:
         condb.rollback()
@@ -223,7 +223,7 @@ def listarProdutos(condb):
     mycursor.execute("SELECT * FROM produtos;")
     produtos = mycursor.fetchall()
     for produto in produtos:
-        print(f"\vNome: {produto[1]}\vDescrição: {produto[2]}\vPreço: {produto[3]}\n")
+        print(f"Nome: {produto[1]}, Descrição: {produto[2]}, Preço: {produto[3]}\n")
 
 def listarClientes(condb):
     print("\n============================ LISTANDO CLIENTES ============================\n")
@@ -231,7 +231,7 @@ def listarClientes(condb):
     mycursor.execute("SELECT * FROM clientes;")
     clientes = mycursor.fetchall()
     for cliente in clientes:
-        print(f"\vNome: {cliente[1]}\vDescrição: {cliente[2]}\vPreço: {cliente[3]}")
+        print(f"Nome: {cliente[1]}, Descrição: {cliente[2]}, Preço: {cliente[3]}")
 
 def listarFornecedores(condb):
     print("\n============================ LISTANDO FORNECEDORES ============================\n")
@@ -239,7 +239,7 @@ def listarFornecedores(condb):
     mycursor.execute("SELECT * FROM fornecedores;")
     fornecedores = mycursor.fetchall()
     for fornecedor  in fornecedores:
-        print(f'\vNome: {fornecedor[1]}\vContato: {fornecedor[2]}\vEndereço: {fornecedor[3]}')
+        print(f'Nome: {fornecedor[1]}, Contato: {fornecedor[2]}, Endereço: {fornecedor[3]}')
 
 def listarPromocoes(condb):
     print("\n============================ LISTANDO PROMOÇÕES ============================\n")
@@ -247,7 +247,7 @@ def listarPromocoes(condb):
     mycursor.execute("SELECT * FROM promocoes;")
     promocoes = mycursor.fetchall()
     for promocao in promocoes:
-        print(f'\vNome: {promocao[1]}\vDescrição: {promocao[2]}\vData de início: {promocao[3]}\vData de fim: {promocao[4]}')
+        print(f'Nome: {promocao[1]}, Descrição: {promocao[2]}, Data de início: {promocao[3]}, Data de fim: {promocao[4]}')
 
 def listarCatProdutos(condb):
     print("\n============================ LISTANDO CATEGORIAS DE PRODUTOS ============================\n")
@@ -255,7 +255,7 @@ def listarCatProdutos(condb):
     mycursor.execute("SELECT Nome, Descricao FROM categoriasprodutos")
     categoriasprodutos = mycursor.fetchall()
     for categoriaproduto in categoriasprodutos:
-        print(f'\vNome: {categoriaproduto[0]}\vDescrição: {categoriaproduto[1]}')
+        print(f'Nome: {categoriaproduto[0]}, Descrição: {categoriaproduto[1]}')
         
 def mostrarEstoque(condb):
     "\n============================ QUANTIDADES DOS PRODUTOS EM ESTOQUE ============================\n"
@@ -263,7 +263,7 @@ def mostrarEstoque(condb):
     mycursor.execute("SELECT produtos.Nome, estoque.Quantidade FROM produtos INNER JOIN estoque ON produtos.ID_Produto = estoque.ID_Produto;")
     quant_produtos = mycursor.fetchall()
     for quant_produto in quant_produtos:
-        print(f'\vProduto: {quant_produto[0]}\vQuantidade em estoque: {quant_produto[1]}\v')
+        print(f'Produto: {quant_produto[0]}, Quantidade em estoque: {quant_produto[1]},')
 
 def obterIdProduto(condb,nome):
     try:
@@ -283,6 +283,28 @@ def obterIdProduto(condb,nome):
     finally:
         condb.close()
 
+def obterIdCliente(condb, nome):
+    try:
+        with condb.cursor() as cursor:
+            sql = "SELECT ID_Cliente FROM clientes WHERE Nome = %s" 
+            cursor.execute(sql, (nome,))
+            resultado = cursor.fetchone()
+            if resultado:
+                return resultado[0]
+            else:
+                print(f"Cliente com nome: {nome}, não encontrado")
+    except Error as e:
+        print(f"Ocorreu um erro ao obter o id do cliente")
+        return None
+
+    finally:
+        condb.close()
     
+def realizarPedido(condb, data_pedido, id_cliente, Total):
+    try: 
+        id_cliente = obterIdCliente(condb, nome)
+        if not id_cliente:
+            return
 
-
+        
+        
