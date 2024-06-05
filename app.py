@@ -1,6 +1,6 @@
 from conexaoDB import conexao
 from BD import *
-from datetime import datetime
+from datetime import datetime, date
 
 
 condb = conexao()
@@ -74,7 +74,37 @@ while True:
             elif opc == 4:
                 listarFornecedores(condb)
 
+    elif opc == 9:
+        while True:
+            opc = int(input("0 - Sair e 1 - Realizar um pedido: "))
+            if opc == 0:
+                break
+            elif opc == 1:
+                opc_cli = input("O Cliente já tem cadastro na loja? Y/N ").capitalize()
+                if opc_cli == 'Y':
+                    nome_cli = input("Digite o nome do cliente: ")
+                    sobrenome_cli = ''
+                    endereco_cli = ''
+                    cidade_cli = ''
+                    codigoPostal_cli = ''
+                    
+                elif opc_cli == 'N':
+                    print("=================== CRIANDO NOVO CLIENTE ===================")
+                    nome_cli= input("Digite o nome do cliente: ")    
+                    sobrenome_cli = input("Digite o sobrenome do cliente: ")
+                    endereco_cli = input("Digite o endereço: ")
+                    cidade_cli = input("Digite o nome da cidade: ")
+                    codigoPostal_cli = input("Digite o codigo postal: ")
 
+                data_atual = date.today()
+                nome_produto = input("Digite o nome do produto que cliente deseja comprar: ")
+                quantCompra_produto = int(input("Informe quantas unidades o cliente vai comprar: "))
+
+                realizarPedido(condb, nome_produto, quantCompra_produto, nome_cli, sobrenome_cli, endereco_cli, cidade_cli, codigoPostal_cli, data_atual, opc_cli)
+
+
+
+                
     elif opc == 11:
         while True:
             opc = int(input('\n0 - Sair\n1 - Cadastrar um novo produto\n2 - Atualizar produto\n3 - Deletar produto\n4 - Listar produtos: '))

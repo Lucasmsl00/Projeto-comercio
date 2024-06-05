@@ -30,7 +30,9 @@ class Aplicacao():
         
         btn_Cadastrar = ctk.CTkButton(master= frame_telaInicial, text= "Cadastrar", width= 5, height= 10, command= lambda: (self.cadastros(), self.janela.withdraw())).place(x= 30, y= 100)
         
-        btn_Alterar = ctk.CTkButton(master= frame_telaInicial, text= "Alterar", width= 5, height= 10).place(x= 30, y= 130) 
+        btn_Alterar = ctk.CTkButton(master= frame_telaInicial, text= "Alterar", width= 5, height= 10).place(x= 30, y= 130)
+
+        btn_Deletar = ctk.CTkButton(master= frame_telaInicial, text= "Deletar", width= 5, height= 10).place(x= 30, y= 160)
        
     def cadastros(self):
         
@@ -152,7 +154,7 @@ class Aplicacao():
             if nome == "" or sobrenome == "" or endereco == "" or cidade == "" or codidoPostal == "":
                 label_inserir = ctk.CTkLabel(master= self.frameCliente, text= "* Todas as informações são de caracter obrigatório")
                 label_inserir.place(x= 61, y= 350)
-                self.janela_cadastro.after(3000, label_inserir.destroy)
+                self.janela_cadastro.after(5000, label_inserir.destroy)
                 
             else: 
                 mycursor.execute(sql, valores)
