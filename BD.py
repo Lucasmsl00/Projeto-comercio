@@ -203,6 +203,7 @@ def deletarFornecedor(condb, nome):
 
 def mostrarTabelas(condb):
     print()
+    
     mycursor = condb.cursor()
     mycursor.execute("SHOW TABLES;")
     resultado = mycursor.fetchall()
@@ -312,7 +313,7 @@ def obterIdCliente(condb, nome):
 
     finally:
         # condb.close()
-        print("OK")
+        print()
     
     # sql = "SELECT ID_Cliente FROM clientes WHERE Nome = %s"
     # val = (nome,)
@@ -328,37 +329,37 @@ def realizarPedido(condb,nome_produto, quantCompra_produto, nome_cli,sobrenome_c
         
 
         id_produto = obterIdProduto(condb, nome_produto)
-        # if not id_produto:
-        #     return
         print(id_produto)
+        if not id_produto:
+            return
 
-        id_cliente = obterIdCliente(condb, nome_cli)
-        # if not id_cliente:
-        #    return
-        print(id_cliente)
         
         mycursor = condb.cursor()
         if opc_cli == 'Y':
-            
+            id_cliente = obterIdCliente(condb, nome_cli)
+            print(id_cliente)
+            if not id_cliente:
+                return
+
             sql = "SELECT Preco FROM produtos WHERE ID_Produto = %s"
             val = (id_produto,)
             mycursor.execute(sql,val)
-            preco_prod = int(mycursor.fetchone()[0])
+            preco_prod = float(mycursor.fetchone()[0])
 
             sql1 = "INSERT INTO pedidos (Data_Pedido, ID_Cliente, Total) VALUES (%s,%s,%s)"
             val1 = (data_atual, id_cliente, (preco_prod*quantCompra_produto))
             mycursor.execute(sql1, val1)
 
-            condb.commit()
+            
 
         elif opc_cli == 'N':
             cadastrarCliente(condb, nome_cli, sobrenome_cli, endereco_cli, cidade_cli, codigoPostal_cli)
-            id_cliente = condb.lastrowid
-
+            id_cliente = obterIdCliente(condb, nome_cli)
+            print(id_cliente)
             sql = "SELECT Preco FROM produtos WHERE ID_Produto = %s"
             val = (id_produto,)
             mycursor.execute(sql,val)
-            preco_prod = int(mycursor.fetchone())
+            preco_prod = float(mycursor.fetchone()[0])
             preco_total = preco_prod * quantCompra_produto
 
             sql1 = "INSERT INTO pedidos (Data_Pedido, ID_Cliente, Total) VALUES (%s,%s,%s)"
@@ -367,14 +368,15 @@ def realizarPedido(condb,nome_produto, quantCompra_produto, nome_cli,sobrenome_c
             
         #DIMINUINDO QUANTIDADE DO ESTOQUE
         sql2 = "SELECT Quantidade FROM estoque WHERE ID_Produto = %s"
-        val2 = (id_produto,)
-        mycursor.execute(sql2, val2)
-        quant_produto = int(mycursor.fetchone()[0])
+        mycursor.execute(sql2, (id_produto,))
+        quant_produto = mycursor.fetchone()[0]
+        print(quant_produto)
         nova_quantidade = quant_produto - quantCompra_produto
-        sql3 = "UPDATE estoque SET Quantidade = %s WHERE ID_Produto = %s"
-        val3 = (nova_quantidade, id_produto)
-        mycursor.execute(sql3, val3)
 
+        sql3 = "UPDATE estoque SET Quantidade = %s WHERE ID_Produto = %s"
+        mycursor.execute(sql3, (nova_quantidade, id_produto))
+
+        condb.commit()
         print("PEDIDO REALIZADO COM SUCESSO!")
 
     except Error as e:
@@ -386,4 +388,5 @@ def realizarPedido(condb,nome_produto, quantCompra_produto, nome_cli,sobrenome_c
         print(f"Erro: {e}")
 
     finally:
-        condb.close()
+        # condb.close()
+        print("OK!")
