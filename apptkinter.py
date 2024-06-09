@@ -112,7 +112,8 @@ class Aplicacao():
                 self.entry_nomeForn.delete(0, 'end')
                 self.entry_contatoForn.delete(0, 'end')
                 self.entry_enderecoForn.delete(0, 'end')
-                label_sucesso = ctk.CTkLabel(master= self.frame, text= "Fornecedor cadastrado com sucesso").place(x= 107.5, y= 220)
+                label_sucesso = ctk.CTkLabel(master= self.frame, text= "Fornecedor cadastrado com sucesso")
+                label_sucesso.place(x= 107.5, y= 220)
                 
                 
             except Exception as e:
@@ -121,7 +122,7 @@ class Aplicacao():
             mycursor.close() 
                     
     def frame_listarFornedores(self):
-        frame2 = ctk.CTkFrame(janela, width= 335, height= 380, fg_color= "black").place(x= 355, y= 10)
+        frame2 = ctk.CTkFrame(master= self.janela, width= 335, height= 380, fg_color= "black").place(x= 355, y= 10)
         self.listarFornecedor()
         
         
@@ -133,8 +134,9 @@ class Aplicacao():
         pos_y = 50
         
         for forn in fornecedores:
-            label_fornecedores = ctk.CTkLabel(master= janela, text= "LISTANDO FORNECEDORES",bg_color= "black", width= 45).place(x= 450, y= 10) 
-            label_nome = ctk.CTkLabel(master= janela, text= f"Nome: {forn[0]}", bg_color= "black", width= 20)
+            label_fornecedores = ctk.CTkLabel(master= self.janela, text= "LISTANDO FORNECEDORES",bg_color= "black", width= 45)
+            label_fornecedores.place(x= 450, y= 10)
+            label_nome = ctk.CTkLabel(master= self.janela, text= f"Nome: {forn[0]}", bg_color= "black", width= 20)
             label_nome.place(x= 375, y= pos_y)
             pos_y += 30
 
@@ -177,4 +179,4 @@ class Aplicacao():
         finally:
             mycursor.close()
             
-main = Aplicacao()   
+main = Aplicacao()    
