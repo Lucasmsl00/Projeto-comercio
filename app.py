@@ -211,7 +211,7 @@ while True:
                 opc_cli = input("O Cliente já tem cadastro na loja? Y/N ").capitalize()
                 if opc_cli == 'Y':
                     nome_cli = input("Digite o nome do cliente: ")
-                    sobrenome_cli = ''
+                    sobrenome_cli = input("Digite o sobrenome do cliente: ")
                     endereco_cli = ''
                     cidade_cli = ''
                     codigoPostal_cli = ''
@@ -227,6 +227,16 @@ while True:
                 data_atual = date.today()
                 nome_produto = input("Digite o nome do produto que cliente deseja comprar: ")
                 quantCompra_produto = int(input("Informe quantas unidades o cliente vai comprar: "))
-
-                realizarPedido(condb, nome_produto, quantCompra_produto, nome_cli, sobrenome_cli, endereco_cli, cidade_cli, codigoPostal_cli, data_atual, opc_cli)
+                forma_de_pagamento = input("Informe a forma de pagamento: \v1 - Cartão de Crédito\v2 - Boleto Bancário\v3 - Cartão de Débito\v4 - Pix: ")
+                if forma_de_pagamento == '1':
+                    forma_de_pagamento = 'Cartão de Crédito'
+                elif forma_de_pagamento == '2':
+                    forma_de_pagamento = 'Boleto Bancário'
+                elif forma_de_pagamento == '3':
+                    forma_de_pagamento = 'Cartão de Débito'
+                elif forma_de_pagamento == '4':
+                    forma_de_pagamento = 'Pix'
+                             
+                realizarPedido(condb, nome_produto, quantCompra_produto, nome_cli, sobrenome_cli, endereco_cli, cidade_cli, codigoPostal_cli, data_atual, opc_cli, forma_de_pagamento)
+                        
         

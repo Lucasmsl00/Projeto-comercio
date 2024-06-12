@@ -70,7 +70,7 @@ def cadastrarCliente(condb, nome, sobrenome, endereco, cidade, codigopostal):
     mycursor.execute(sql,valores)
     condb.commit()
     print("Cliente cadastrado com sucesso!")
-    mycursor.close()
+    # mycursor.close()
 
 def cadastrarFornecedor(condb, nome, contato, endereco):
     mycursor = condb.cursor()
@@ -272,42 +272,36 @@ def mostrarEstoque(condb): # SEM USO
 
 def obterIdProduto(condb,nome):
     try:
-        # with condb.cursor() as cursor:
-        #     sql = ("SELECT ID_Produto FROM produtos WHERE Nome = %s")
-        #     cursor.execute(sql, (nome,))
-        #     resultado = cursor.fetchone()
-
         mycursor = condb.cursor()
-        sql = "SELECT ID_Produto FROM produtos WHERE Nome = %s" 
-        mycursor.execute(sql, (nome,))
-        resultado = int(mycursor.fetchone()[0])
-        if resultado:
-            return resultado
+        sql = "SELECT ID_Produto FROM produtos WHERE Nome = %s"
+        val = (nome,)
+        mycursor.execute(sql, val)
+        id_produto = mycursor.fetchone()[0]
+        int(id_produto)
+        if id_produto:
+            return id_produto
         else:
-            print(f"Produto com nome: {nome}, não encontrado!")
-    
+            print(f"O produto com o  nome: {nome} não foi encontrado!")
+            
     except Error as e:
+        condb.rollback()
         print(f"Ocorreu um erro ao obter Id do produto: {e}")
         return None
 
     finally:
-        # condb.close()
-        print("OK")
+        print("ID_Produto obtido com sucesso!")
 
-def obterIdCliente(condb, nome):
+def obterIdCliente(condb, nome, sobrenome):
     try:
-        # with condb.cursor() as cursor:
-        #sql = "SELECT ID_Cliente FROM clientes WHERE Nome = %s"
-        #cursor.execute(sql, (nome,))
-        #esultado = cursor.fetchone()[0]
-        #int(resultado)
 
         mycursor = condb.cursor()
-        sql = "SELECT ID_Cliente FROM clientes WHERE Nome = %s" 
-        mycursor.execute(sql, (nome,))
-        resultado = int(mycursor.fetchone()[0])
-        if resultado:
-            return resultado
+        sql = "SELECT ID_Cliente FROM clientes WHERE Nome = %s AND Sobrenome = %s" 
+        val = (nome, sobrenome)
+        mycursor.execute(sql, val)
+        id_cliente = mycursor.fetchone()[0]
+        int(id_cliente)
+        if id_cliente:
+            return id_cliente
         else:
             print(f"Cliente com nome: {nome}, não encontrado")
 
@@ -316,34 +310,17 @@ def obterIdCliente(condb, nome):
         return None
 
     finally:
-        # condb.close()
-        print()
+        print("Id_Cliente obtido com sucesso!")
     
-    # sql = "SELECT ID_Cliente FROM clientes WHERE Nome = %s"
-    # val = (nome,)
-    # mycursor.execute(sql, val)
-    # condb.commit()
-    # id_cliente = int(mycursor.fetchone()[0])
-    # print(type(id_cliente))
-    # print(id_cliente)
-    # mycursor.close()
-    
-def realizarPedido(condb,nome_produto, quantCompra_produto, nome_cli,sobrenome_cli, endereco_cli, cidade_cli, codigoPostal_cli, data_atual, opc_cli):
+def realizarPedido(condb,nome_produto, quantCompra_produto, nome_cli,sobrenome_cli, endereco_cli, cidade_cli, codigoPostal_cli, data_atual, opc_cli, forma_de_pagamento):
     try:
         
 
         id_produto = obterIdProduto(condb, nome_produto)
-        print(id_produto)
-        if not id_produto:
-            return
-
         
         mycursor = condb.cursor()
         if opc_cli == 'Y':
             id_cliente = obterIdCliente(condb, nome_cli)
-            print(id_cliente)
-            if not id_cliente:
-                return
 
             sql = "SELECT Preco FROM produtos WHERE ID_Produto = %s"
             val = (id_produto,)
@@ -353,44 +330,66 @@ def realizarPedido(condb,nome_produto, quantCompra_produto, nome_cli,sobrenome_c
             sql1 = "INSERT INTO pedidos (Data_Pedido, ID_Cliente, Total) VALUES (%s,%s,%s)"
             val1 = (data_atual, id_cliente, (preco_prod*quantCompra_produto))
             mycursor.execute(sql1, val1)
-
+            id_pedido = mycursor.lastrowid
             
 
         elif opc_cli == 'N':
             cadastrarCliente(condb, nome_cli, sobrenome_cli, endereco_cli, cidade_cli, codigoPostal_cli)
-            id_cliente = obterIdCliente(condb, nome_cli)
+            id_cliente = obterIdCliente(condb, nome_cli, sobrenome_cli)
             print(id_cliente)
-            sql = "SELECT Preco FROM produtos WHERE ID_Produto = %s"
-            val = (id_produto,)
-            mycursor.execute(sql,val)
+            sql2 = "SELECT Preco FROM produtos WHERE ID_Produto = %s"
+            val2 = (id_produto,)
+            mycursor.execute(sql2,val2)
             preco_prod = float(mycursor.fetchone()[0])
             preco_total = preco_prod * quantCompra_produto
 
-            sql1 = "INSERT INTO pedidos (Data_Pedido, ID_Cliente, Total) VALUES (%s,%s,%s)"
-            val1 = (data_atual, id_cliente, preco_total)
-            mycursor.execute(sql1, val1)
+            sql3 = "INSERT INTO pedidos (Data_Pedido, ID_Cliente, Total) VALUES (%s,%s,%s)"
+            val3 = (data_atual, id_cliente, preco_total)
+            mycursor.execute(sql3, val3)
+            id_pedido = mycursor.lastrowid
+            
             
         #DIMINUINDO QUANTIDADE DO ESTOQUE
-        sql2 = "SELECT Quantidade FROM estoque WHERE ID_Produto = %s"
-        mycursor.execute(sql2, (id_produto,))
+        sql4 = "SELECT Quantidade FROM estoque WHERE ID_Produto = %s"
+        mycursor.execute(sql4, (id_produto,))
         quant_produto = mycursor.fetchone()[0]
         print(quant_produto)
         nova_quantidade = quant_produto - quantCompra_produto
 
-        sql3 = "UPDATE estoque SET Quantidade = %s WHERE ID_Produto = %s"
-        mycursor.execute(sql3, (nova_quantidade, id_produto))
+        sql5 = "UPDATE estoque SET Quantidade = %s WHERE ID_Produto = %s"
+        mycursor.execute(sql5, (nova_quantidade, id_produto))
 
-        condb.commit()
-        print("PEDIDO REALIZADO COM SUCESSO!")
-
+        #ADICIONANDO INFORMAÇÕES EM DETALHESPEDIDOS        
+        sql6 = "INSERT INTO detalhespedido (ID_Pedido, ID_Produto, Quantidade) VALUES (%s, %s, %s)"
+        val6 = (id_pedido, id_produto, quantCompra_produto)
+        mycursor.execute(sql6, val6)
+        
+        #PEGANDO O TOTAL DO PEDIDO
+        sql9 = "SELECT Total FROM pedidos WHERE ID_Pedido = %s"
+        val9 = (id_pedido,)
+        mycursor.execute(sql9, val9)
+        total = float(mycursor.fetchone()[0])
+        
+        #ADICIONANDO INFORMAÇÕES NA TABELA VENDAS
+        sql7 = "INSERT INTO vendas (Data, ID_Cliente, MetodoPagamento, Total) VALUES (%s, %s, %s, %s)"
+        val7 = (data_atual, id_cliente, forma_de_pagamento, total)
+        mycursor.execute(sql7, val7)
+        id_venda = mycursor.lastrowid
+        
+        #ADICIONANDO INFORMAÇÕES NA TABELA PAGAMENTOS
+        sql8 = "INSERT INTO pagamentos (ID_Venda, Data, Valor) VALUES (%s, %s, %s)"
+        val8 = (id_venda, data_atual, total)
+        mycursor.execute(sql8, val8)
+       
+        
     except Error as e:
-        # condb.rollback()
-        print(f"Erro: {e}")
+        condb.rollback()
+        print(f"Erro no banco de dados: {e}")
     
     except Exception as e:
-        # condb.rollback()
+        condb.rollback()
         print(f"Erro: {e}")
 
     finally:
-        # condb.close()
-        print("OK!")
+        condb.commit()
+        print("PEDIDO REALIZADO COM SUCESSO!")
