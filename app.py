@@ -6,13 +6,13 @@ from datetime import datetime, date
 condb = conexao()
 
 while True:
-    opc = int(input("\vEscolha um das opções:\v\v0 => Sair\v1 => Cadastrar\v2 => Atualizar\v3 => Deletar\v4 => Listar\v5 => Realiza pedido: "))
+    opc = int(input("\nEscolha um das opções:\n0 => Sair\n1 => Cadastrar\n2 => Atualizar\n3 => Deletar\n4 => Listar\n5 => Realiza pedido: "))
     if opc == 0: break
     
     elif opc == 1:
         
         while True:
-            opc_cadastrar = int(input("\vCADASTRAR\v\v0 => Sair\v1 => Cliente\v2 => Fornecedor\v3 => Produto\v4 => Funcionário\v5 => Promoções: "))
+            opc_cadastrar = int(input("\nCADASTRAR\n0 => Sair\n1 => Cliente\n2 => Fornecedor\n3 => Produto\n4 => Funcionário\n5 => Promoções: "))
             if opc_cadastrar == 0: break
             
             elif opc_cadastrar == 1:
@@ -74,7 +74,7 @@ while True:
                 cadastrarPromocoes(condb, nome, descricao, dataini, datafim)
     elif opc == 2:
         while True:
-            opc_atualizar = int(input("\vAtualizar\v\v0 => Sair\v1 => Cliente\v2 => Fornecedor\v3 => Produto\v4 => Funcionários\v5 => Promoção: "))
+            opc_atualizar = int(input("\nAtualizar\n0 => Sair\n1 => Cliente\n2 => Fornecedor\n3 => Produto\n4 => Funcionários\n5 => Promoção: "))
             
             if opc_atualizar == 0: break
             
@@ -123,7 +123,7 @@ while True:
     elif opc == 3:
         while True:
             
-            opc_alterar = int(input("\vDELETAR\v\v0 => Sair\v1 => Cliente\v2 => Fornecedor\v3 => Produto\v4 => Funcionários\v5 => Promoção: "))
+            opc_alterar = int(input("\nDELETAR\n0 => Sair\n1 => Cliente\n2 => Fornecedor\n3 => Produto\n4 => Funcionários\n5 => Promoção: "))
             
             if opc_alterar == 0: break
             
@@ -168,7 +168,7 @@ while True:
                 
                 finally:
                     if opc == 'Y':
-                        print("\vFuncionário deletado com sucesso! ")
+                        print("\nFuncionário deletado com sucesso! ")
                 
             
             elif opc_alterar == 5:
@@ -182,7 +182,7 @@ while True:
     elif opc == 4:
         while True:
             
-            opc_listar = int(input("\vLISTAR\v\v0 => Sair\v1 => Cliente\v2 => Fornecedor\v3 => Produto\v4 => Funcionários\v5 => Promoção: "))
+            opc_listar = int(input("\nLISTAR\n0 => Sair\n1 => Cliente\n2 => Fornecedor\n3 => Produto\n4 => Funcionários\n5 => Promoção: "))
             
             if opc_listar == 0: break
 
@@ -204,7 +204,7 @@ while True:
     elif opc == 5:
         
         while True:
-            opc = int(input("\vREALIZANDO PEDIDO\v0 => Sair\v1 => Realizar um pedido: "))
+            opc = int(input("\nREALIZANDO PEDIDO\n0 => Sair\n1 => Realizar um pedido: "))
             if opc == 0:
                 break
             elif opc == 1:
@@ -227,7 +227,7 @@ while True:
                 data_atual = date.today()
                 nome_produto = input("Digite o nome do produto que cliente deseja comprar: ")
                 quantCompra_produto = int(input("Informe quantas unidades o cliente vai comprar: "))
-                forma_de_pagamento = input("Informe a forma de pagamento: \v1 - Cartão de Crédito\v2 - Boleto Bancário\v3 - Cartão de Débito\v4 - Pix: ")
+                forma_de_pagamento = input("Informe a forma de pagamento: \n1 - Cartão de Crédito\n2 - Boleto Bancário\n3 - Cartão de Débito\n4 - Pix: ")
                 if forma_de_pagamento == '1':
                     forma_de_pagamento = 'Cartão de Crédito'
                 elif forma_de_pagamento == '2':

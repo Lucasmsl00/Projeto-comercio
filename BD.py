@@ -320,7 +320,7 @@ def realizarPedido(condb,nome_produto, quantCompra_produto, nome_cli,sobrenome_c
         
         mycursor = condb.cursor()
         if opc_cli == 'Y':
-            id_cliente = obterIdCliente(condb, nome_cli)
+            id_cliente = obterIdCliente(condb, nome_cli, sobrenome_cli)
 
             sql = "SELECT Preco FROM produtos WHERE ID_Produto = %s"
             val = (id_produto,)
